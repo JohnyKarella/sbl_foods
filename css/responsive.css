@@ -1,0 +1,18 @@
+/* ==========================================================================
+   RESPONSIVE — shared breakpoints (1200 · 1024 · 768 · 560)
+   Section-specific rules sit beside each section in home.css
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .section-head--split { grid-template-columns: 1fr; align-items: start; }
+}
+@media (max-width: 768px) {
+  .btn-row .btn { flex: 1 1 auto; }
+}
+@media (max-width: 560px) {
+  .btn { min-height: 48px; padding-inline: 1.25rem; }
+  .back-to-top { width: 46px; height: 46px; }
+  .icon-btn { width: 44px; height: 44px; }
+}
+@media (hover: none) {
+  .card:hover { transform: none; box-shadow: none; }
+}

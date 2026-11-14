@@ -1,0 +1,158 @@
+/* ==========================================================================
+   SBL JOURNEY — "A Legacy Built Step by Step" (horizontal road)
+   Self-contained section. Every class is prefixed .sblj so it can be dropped
+   into any page without clashing. Colours/fonts: override the --sblj-* vars.
+
+   Without JavaScript the milestones show as a simple list. sbl-journey.js
+   adds .is-enhanced, which turns on the pinned, sideways-travelling road.
+   ========================================================================== */
+.sblj {
+  --sblj-bg: #fbf6ec;
+  --sblj-ink: #1b2a20;
+  --sblj-muted: #5d695f;
+  --sblj-green: #1f5135;
+  --sblj-gold-1: #fbedc2;
+  --sblj-gold-2: #d9b45e;
+  --sblj-gold-3: #a97c22;
+  --sblj-card: rgba(255, 255, 255, 0.9);
+  --sblj-font-display: "Fraunces", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sblj-font-body: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --sblj-card-w: clamp(300px, 25vw, 380px);  /* card width */
+  --sblj-lane: clamp(100px, 13vh, 150px);     /* height of the road band */
+  --sblj-gap: clamp(14px, 1.6vw, 26px);       /* space between neighbouring cards */
+
+  position: relative; isolation: isolate;
+  background: var(--sblj-bg); color: var(--sblj-ink);
+  font-family: var(--sblj-font-body); line-height: 1.55;
+}
+.sblj *, .sblj *::before, .sblj *::after { box-sizing: border-box; }
+
+/* Faded grains backdrop, like the brochure */
+.sblj__bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.sblj__bg img { width: 100%; height: 100%; object-fit: cover; opacity: 0.12; filter: saturate(0.7); }
+.sblj__bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, var(--sblj-bg) 0%, rgba(251, 246, 236, 0.5) 20%, rgba(251, 246, 236, 0.5) 80%, var(--sblj-bg) 100%); }
+
+.sblj__sticky { position: relative; isolation: isolate; padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 4vw, 3rem); }
+
+/* ---------- Heading ---------- */
+.sblj__head { position: relative; z-index: 3; display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; max-width: 1320px; margin: 0 auto clamp(1.5rem, 3vw, 2.5rem); }
+.sblj__head-copy { display: grid; justify-items: start; gap: 0.3rem; }
+.sblj__eyebrow { margin: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--sblj-gold-3); }
+.sblj__title { margin: 0; font-family: var(--sblj-font-display); font-weight: 500; font-size: clamp(2rem, 1.3rem + 2.6vw, 3.8rem); line-height: 1.04; letter-spacing: -0.02em; color: var(--sblj-green); }
+.sblj__subtitle { margin: 0.35rem 0 0; padding: 0.4rem 1.8rem 0.45rem 1rem; font-family: var(--sblj-font-display); font-size: clamp(1rem, 0.88rem + 0.55vw, 1.4rem); color: #3a3220; border-radius: 999px;
+  background: linear-gradient(90deg, var(--sblj-gold-2), var(--sblj-gold-1) 70%, rgba(251, 237, 194, 0)); }
+.sblj__now { display: none; margin: 0; font-family: var(--sblj-font-display); font-weight: 500; font-size: clamp(3rem, 2rem + 5vw, 7.5rem); line-height: 0.85; letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1.5px var(--sblj-gold-2); overflow: hidden; height: 0.9em; }
+.sblj__now span { display: block; transition: transform 0.45s cubic-bezier(.22,1,.36,1), opacity 0.3s; }
+.sblj__now.is-changing span { transform: translateY(-40%); opacity: 0; transition-duration: 0.01s; }
+
+/* ---------- Basic (no-JS) list ---------- */
+.sblj__track { position: relative; max-width: 1320px; margin-inline: auto; }
+.sblj__road, .sblj__finish { display: none; }
+.sblj__list { position: relative; z-index: 1; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.sblj__card { position: relative; padding: 1rem 1.2rem 1.1rem; background: var(--sblj-card); border: 1px solid rgba(27, 42, 32, 0.08); border-radius: 18px;
+  box-shadow: 0 18px 40px -26px rgba(22, 58, 38, 0.45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.sblj__year { display: inline-block; align-self: flex-start; margin: 0 0 0.55rem; padding: 0.1rem 1rem 0.15rem; font-family: var(--sblj-font-display); font-weight: 500; font-size: clamp(1.35rem, 1.15rem + 0.6vw, 1.75rem); line-height: 1.2; color: #2c2618;
+  border-radius: 999px; background: linear-gradient(100deg, var(--sblj-gold-1), var(--sblj-gold-2) 55%, var(--sblj-gold-1)); box-shadow: inset 0 0 0 1px rgba(169, 124, 34, 0.35), 0 6px 14px -8px rgba(169, 124, 34, 0.8); }
+.sblj__heading { margin: 0 0 0.35rem; font-size: 1rem; font-weight: 700; line-height: 1.3; color: var(--sblj-green); }
+.sblj__text { margin: 0; font-size: 0.9rem; color: var(--sblj-muted); }
+.sblj__text strong { color: var(--sblj-ink); font-weight: 700; }
+
+/* ==========================================================================
+   Enhanced: pinned stage, road runs left → right
+   ========================================================================== */
+.sblj.is-enhanced .sblj__sticky {
+  position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
+  display: flex; flex-direction: column; padding-bottom: clamp(1rem, 3vh, 2rem); padding-inline: 0;
+}
+.sblj.is-enhanced .sblj__head { width: 100%; padding-inline: clamp(1rem, 4vw, 3rem); max-width: none; }
+.sblj.is-enhanced .sblj__now { display: block; }
+.sblj.is-enhanced .sblj__track { flex: 1; min-height: 0; max-width: none; margin: 0; width: max-content; will-change: transform; }
+.sblj.is-enhanced .sblj__road { display: block; position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; pointer-events: none; }
+.sblj.is-enhanced .sblj__finish { display: block; position: absolute; z-index: 2; width: 84px; height: 84px; object-fit: contain; border-radius: 50%; background: #fff; padding: 6px; box-shadow: 0 14px 30px -12px rgba(22,58,38,0.5); opacity: 0; transform: scale(0.6); transition: opacity 0.5s, transform 0.6s cubic-bezier(.34,1.56,.64,1); }
+.sblj.is-enhanced .sblj__finish.is-reached { opacity: 1; transform: none; }
+
+/* Two rows of cards with the road band between them; neighbours overlap by half */
+.sblj.is-enhanced .sblj__list {
+  display: flex; align-items: stretch; gap: 0; height: 100%;
+  padding-left: clamp(1.5rem, 7vw, 7rem); padding-right: 55vw;
+}
+.sblj.is-enhanced .sblj__item {
+  --w: var(--sblj-card-w);
+  flex: none; width: var(--w); height: calc((100% - var(--sblj-lane)) / 2);
+  margin-right: calc(var(--w) * -0.5 + var(--sblj-gap));
+  display: flex;
+}
+.sblj.is-enhanced .sblj__item--wide { --w: calc(var(--sblj-card-w) * 1.9); }
+.sblj.is-enhanced .sblj__item:nth-child(odd) { align-self: flex-start; align-items: flex-end; }   /* above the road */
+.sblj.is-enhanced .sblj__item:nth-child(even) { align-self: flex-end; align-items: flex-start; }  /* below the road */
+.sblj.is-enhanced .sblj__item:last-child { margin-right: 0; }
+.sblj.is-enhanced .sblj__card { width: 100%; max-height: 100%; overflow: auto; scrollbar-width: thin; display: flex; flex-direction: column; }
+/* year plaque always faces the road */
+.sblj.is-enhanced .sblj__item:nth-child(odd) .sblj__year { order: 3; margin: 0.6rem 0 0; }
+
+/* Card reveal as the truck arrives */
+.sblj.is-enhanced .sblj__card { opacity: 0; transition: opacity 0.6s ease, transform 0.7s cubic-bezier(.22,1,.36,1), box-shadow 0.4s; }
+.sblj.is-enhanced .sblj__item:nth-child(odd) .sblj__card { transform: translateY(-28px); }
+.sblj.is-enhanced .sblj__item:nth-child(even) .sblj__card { transform: translateY(28px); }
+.sblj.is-enhanced .sblj__item.is-reached .sblj__card { opacity: 1; transform: none; }
+.sblj.is-enhanced .sblj__item.is-reached .sblj__card:hover { box-shadow: 0 26px 50px -24px rgba(22, 58, 38, 0.55); }
+
+/* ---------- SVG road pieces (drawn by JS) ---------- */
+.sblj__ghost { fill: none; stroke: rgba(120, 105, 75, 0.38); stroke-linecap: round; stroke-linejoin: round; }
+.sblj__shadow { fill: none; stroke: rgba(70, 52, 20, 0.16); stroke-linecap: round; stroke-linejoin: round; }
+.sblj__edge { fill: none; stroke: #f4f1ea; stroke-linecap: round; stroke-linejoin: round; }
+.sblj__asphalt { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.sblj__centre { fill: none; stroke: #ffffff; stroke-linecap: butt; }
+.sblj__link { fill: none; stroke: var(--sblj-gold-3); stroke-width: 1.6; stroke-dasharray: 5 5; stroke-linecap: round; opacity: 0; transition: opacity 0.5s 0.25s; }
+.sblj__pin { transform-box: fill-box; transform-origin: 50% 100%; opacity: 0; transform: translateY(-34px) scale(0.6); transition: transform 0.6s cubic-bezier(.34,1.56,.64,1), opacity 0.3s; }
+.sblj__pin-shadow { opacity: 0; transition: opacity 0.4s 0.2s; }
+.sblj__pin-ring { transform-box: fill-box; transform-origin: center; opacity: 0; }
+.sblj__pin.is-reached { opacity: 1; transform: none; }
+.sblj__pin-shadow.is-reached { opacity: 1; }
+.sblj__link.is-reached { opacity: 0.85; }
+.sblj__pin-ring.is-reached { animation: sblj-ring 1.2s ease-out 0.35s 1; }
+@keyframes sblj-ring { 0% { opacity: 0.7; transform: scale(0.4); } 100% { opacity: 0; transform: scale(2.4); } }
+
+/* ---------- Static mode (reduced motion): swipe the road sideways, all shown ---------- */
+.sblj.is-static .sblj__sticky { position: relative; height: auto; min-height: 640px; }
+.sblj.is-static .sblj__viewport { overflow-x: auto; }
+.sblj.is-static .sblj__track { height: min(78vh, 720px); flex: none; }
+.sblj.is-static .sblj__card, .sblj.is-static .sblj__pin, .sblj.is-static .sblj__link, .sblj.is-static .sblj__pin-shadow, .sblj.is-static .sblj__finish { opacity: 1 !important; transform: none !important; transition: none !important; }
+
+/* ---------- Smaller screens ---------- */
+@media (max-width: 900px) {
+  .sblj { --sblj-card-w: min(62vw, 330px); --sblj-lane: clamp(96px, 13vh, 130px); }
+  .sblj.is-enhanced .sblj__item--wide { --w: calc(var(--sblj-card-w) * 1.35); }
+}
+@media (max-width: 560px) {
+  .sblj { --sblj-card-w: 72vw; --sblj-lane: 92px; --sblj-gap: 12px; }
+  .sblj__head { align-items: flex-start; }
+  .sblj__now { font-size: 3.4rem; margin-top: 0.4rem; }
+  .sblj__card { padding: 0.85rem 1rem 0.95rem; }
+  .sblj__heading { font-size: 0.95rem; }
+  .sblj__text { font-size: 0.84rem; line-height: 1.5; }
+  .sblj.is-enhanced .sblj__item--wide { --w: 86vw; }
+  .sblj.is-enhanced .sblj__finish { width: 60px; height: 60px; padding: 4px; }
+  .sblj.is-enhanced .sblj__list { padding-left: 1rem; }
+}
+/* Short screens (laptops at 768px tall, landscape tablets): compact header, wider cards */
+@media (max-height: 860px) and (min-width: 561px) {
+  .sblj { --sblj-lane: 100px; --sblj-card-w: clamp(320px, 30vw, 400px); }
+  .sblj.is-enhanced .sblj__sticky { padding-top: 1.25rem; padding-bottom: 0.75rem; }
+  .sblj.is-enhanced .sblj__head { margin-bottom: 0.5rem; align-items: center; }
+  .sblj.is-enhanced .sblj__head-copy { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem; }
+  .sblj.is-enhanced .sblj__eyebrow { display: none; }
+  .sblj__title { font-size: clamp(1.7rem, 1.1rem + 1.8vw, 2.6rem); }
+  .sblj__subtitle { margin: 0; font-size: 1rem; padding-block: 0.3rem 0.35rem; }
+  .sblj__now { font-size: clamp(2.6rem, 1.6rem + 3vw, 4.2rem); }
+  .sblj__text { font-size: 0.84rem; line-height: 1.48; }
+  .sblj__heading { font-size: 0.95rem; margin-bottom: 0.25rem; }
+  .sblj__card { padding: 0.75rem 1rem 0.8rem; }
+  .sblj__year { font-size: 1.25rem; margin-bottom: 0.35rem; }
+  .sblj.is-enhanced .sblj__item:nth-child(odd) .sblj__year { margin-top: 0.4rem; }
+  .sblj.is-enhanced .sblj__item--wide { --w: calc(var(--sblj-card-w) * 1.9); }
+}
+@media (max-height: 640px) and (min-width: 561px) {
+  .sblj { --sblj-lane: 84px; }
+  .sblj__subtitle { display: none; }
+}

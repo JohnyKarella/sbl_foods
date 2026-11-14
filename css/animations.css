@@ -1,0 +1,39 @@
+/* ==========================================================================
+   ANIMATIONS — reveal states, split text, keyframes, reduced motion
+   html.motion is set by the inline head script only when motion is allowed,
+   so nothing is hidden for visitors without JS or with reduced motion.
+   ========================================================================== */
+html.motion [data-reveal] { opacity: 0; transform: translate3d(0, 36px, 0); transition: opacity 0.9s var(--ease-out), transform 1s var(--ease-out), clip-path 1.2s var(--ease-out); transition-delay: var(--delay, 0s); }
+html.motion [data-reveal="fade"] { transform: none; }
+html.motion [data-reveal="left"] { transform: translate3d(-44px, 0, 0); }
+html.motion [data-reveal="right"] { transform: translate3d(44px, 0, 0); }
+html.motion [data-reveal="scale"] { transform: scale(0.94); }
+html.motion [data-reveal="clip"] { opacity: 1; transform: none; clip-path: inset(0 0 100% 0 round var(--radius-lg)); }
+html.motion [data-reveal].is-in { opacity: 1; transform: none; }
+/* Elements whose transform is driven by GSAP scroll timelines */
+html.motion [data-reveal][data-gsap] { transition-property: opacity, clip-path; }
+html.motion [data-reveal="clip"].is-in { clip-path: inset(0 0 0 0 round var(--radius-lg)); }
+
+html.motion [data-stagger] > * { opacity: 0; transform: translate3d(0, 28px, 0); transition: opacity 0.8s var(--ease-out), transform 0.9s var(--ease-out); transition-delay: calc(var(--i, 0) * 0.07s + var(--delay, 0s)); }
+html.motion [data-stagger].is-in > * { opacity: 1; transform: none; }
+
+.split-line { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+.split-word { display: inline-block; }
+html.motion [data-split] .split-word { transform: translate3d(0, 110%, 0); transition: transform 1s var(--ease-out); transition-delay: calc(var(--w, 0) * 0.045s + var(--delay, 0s)); }
+html.motion [data-split].is-in .split-word { transform: none; }
+
+[data-parallax] { overflow: hidden; }
+html.motion [data-parallax] > img { transform: scale(1.14); will-change: transform; }
+
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes marquee-rev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@keyframes pulse-ring { 0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.8; } 100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0; } }
+@keyframes float-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes kenburns { from { transform: scale(1.12); } to { transform: scale(1); } }
+@keyframes bar-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes pt-out { from { opacity: 1; } to { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  body::after { display: none; }
+}
